@@ -39,20 +39,27 @@ class EventListener implements Listener
     {
         $player = $event->getPlayer();
         $item = $player->getInventory()->getItemInHand();
-        if ($item->getId() === Item::CHEST && $item->getNamedTagEntry("Size") !== null) {
+        if ($item->getId() === Item::CHEST && ($size = $item->getNamedTagEntry("Size")) !== null) {
             if ($item->getNamedTagEntry("Contents") === null) $item->setNamedTagEntry(new ListTag("Contents"));
 
-            $backpack = InvMenu::create(InvMenu::TYPE_CHEST);
+            $backpack = InvMenu::create($size->getValue() > 27 ? InvMenu::TYPE_DOUBLE_CHEST : InvMenu::TYPE_CHEST);
             $backpack->setName($item->getName());
             $backpack->getInventory()->setContents(array_map(function (CompoundTag $serializedItem): Item {
                 return Item::nbtDeserialize($serializedItem);
             }, $item->getNamedTagEntry("Contents")->getValue()));
+            for ($i = $backpack->getInventory()->getSize() - 1; $i >= $size->getValue(); $i--) {
+                $slot = Item::get(Item::INVISIBLE_BEDROCK)->setCustomName(" ");
+                $slot->setNamedTagEntry(new ByteTag("BackpackSlot", 1));
+                $backpack->getInventory()->setItem($i, $slot);
+            }
 
             $backpack->setListener(function (Player $player) use ($backpack): bool {
                 $backpackItem = $player->getInventory()->getItemInHand();
                 $backpackItem->setNamedTagEntry(new ListTag("Contents", array_map(function (Item $item) {
                     return $item->nbtSerialize();
-                }, $backpack->getInventory()->getContents())));
+                }, array_filter($backpack->getInventory()->getContents(), function (Item $item) {
+                    return $item->getId() !== Item::INVISIBLE_BEDROCK || $item->getNamedTagEntry("BackpackSlot") === null;
+                }))));
                 $player->getInventory()->setItemInHand($backpackItem);
                 return true;
             });
@@ -62,7 +69,9 @@ class EventListener implements Listener
                 $backpackItem->removeNamedTagEntry("Opened");
                 $backpackItem->setNamedTagEntry(new ListTag("Contents", array_map(function (Item $item) {
                     return $item->nbtSerialize();
-                }, $backpack->getInventory()->getContents())));
+                }, array_filter($backpack->getInventory()->getContents(), function (Item $item) {
+                    return $item->getId() !== Item::INVISIBLE_BEDROCK || $item->getNamedTagEntry("BackpackSlot") === null;
+                }))));
                 $player->getInventory()->setItemInHand($backpackItem);
             });
 
@@ -84,7 +93,7 @@ class EventListener implements Listener
         foreach ($actions as $action) {
             if (
                 ($action->getSourceItem()->getId() === Item::CHEST && $action->getSourceItem()->getNamedTagEntry("Opened") !== null) ||
-                ($action->getTargetItem()->getId() === Item::CHEST && $action->getTargetItem()->getNamedTagEntry("Opened") !== null)
+                ($action->getTargetItem()->getId() === Item::INVISIBLE_BEDROCK && $action->getTargetItem()->getNamedTagEntry("BackpackSlot") !== null)
             ) {
                 $event->setCancelled();
             }

@@ -1,0 +1,21 @@
+sizes:
+  Small: 18
+  Medium: 27
+  Large: 36
+  Gigantic: 45
+crafting:
+  Small:
+    meta: 1
+    shape:
+      - "AAA"
+      - "ABA"
+      - "AAA"
+    materials:
+      A:
+        id: 334
+        meta: 0
+        count: 1
+      B:
+        id: 54
+        meta: 0
+        count: 1
