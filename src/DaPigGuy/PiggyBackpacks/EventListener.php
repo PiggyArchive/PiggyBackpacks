@@ -57,7 +57,7 @@ class EventListener implements Listener
                 $backpackItem = $player->getInventory()->getItemInHand();
                 $backpackItem->setNamedTagEntry(new ListTag("Contents", array_map(function (Item $item) {
                     return $item->nbtSerialize();
-                }, array_filter($backpack->getInventory()->getContents(), function (Item $item) {
+                }, array_filter($backpack->getInventory()->getContents(true), function (Item $item) {
                     return $item->getId() !== Item::INVISIBLE_BEDROCK || $item->getNamedTagEntry("BackpackSlot") === null;
                 }))));
                 $player->getInventory()->setItemInHand($backpackItem);
@@ -69,7 +69,7 @@ class EventListener implements Listener
                 $backpackItem->removeNamedTagEntry("Opened");
                 $backpackItem->setNamedTagEntry(new ListTag("Contents", array_map(function (Item $item) {
                     return $item->nbtSerialize();
-                }, array_filter($backpack->getInventory()->getContents(), function (Item $item) {
+                }, array_filter($backpack->getInventory()->getContents(true), function (Item $item) {
                     return $item->getId() !== Item::INVISIBLE_BEDROCK || $item->getNamedTagEntry("BackpackSlot") === null;
                 }))));
                 $player->getInventory()->setItemInHand($backpackItem);
