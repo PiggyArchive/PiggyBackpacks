@@ -8,6 +8,17 @@ crafting:
     meta: 1
     shape:
       - "AAA"
+      - "A A"
+      - "AAA"
+    materials:
+      A:
+        id: 334
+        meta: 0
+        count: 1
+  Medium:
+    meta: 1
+    shape:
+      - "AAA"
       - "ABA"
       - "AAA"
     materials:
@@ -16,6 +27,36 @@ crafting:
         meta: 0
         count: 1
       B:
-        id: 54
+        id: 42
+        meta: 0
+        count: 1
+  Large:
+    meta: 1
+    shape:
+      - "AAA"
+      - "ABA"
+      - "AAA"
+    materials:
+      A:
+        id: 334
+        meta: 0
+        count: 1
+      B:
+        id: 41
+        meta: 0
+        count: 1
+  Gigantic:
+    meta: 1
+    shape:
+      - "AAA"
+      - "ABA"
+      - "AAA"
+    materials:
+      A:
+        id: 334
+        meta: 0
+        count: 1
+      B:
+        id: 57
         meta: 0
         count: 1
