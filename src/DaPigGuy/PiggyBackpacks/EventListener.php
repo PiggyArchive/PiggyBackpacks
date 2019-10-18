@@ -11,8 +11,12 @@ use pocketmine\event\player\PlayerInteractEvent;
 use pocketmine\item\Item;
 use pocketmine\nbt\tag\ByteTag;
 use pocketmine\nbt\tag\CompoundTag;
+use pocketmine\nbt\tag\IntTag;
 use pocketmine\nbt\tag\ListTag;
+use pocketmine\nbt\tag\StringTag;
 use pocketmine\Player;
+use pocketmine\utils\TextFormat;
+use pocketmine\utils\UUID;
 
 /**
  * Class EventListener
@@ -40,7 +44,19 @@ class EventListener implements Listener
         $player = $event->getPlayer();
         $item = $player->getInventory()->getItemInHand();
         if ($item->getId() === Item::CHEST && ($size = $item->getNamedTagEntry("Size")) !== null) {
+            if ($item->getCount() > 1) {
+                $player->sendTip(TextFormat::RED . "Backpacks can not be opened while stacked.");
+                return;
+            }
             if ($item->getNamedTagEntry("Contents") === null) $item->setNamedTagEntry(new ListTag("Contents"));
+            if ($item->getNamedTagEntry("UUID") === null) {
+                $item->setNamedTagEntry(new StringTag("UUID", UUID::fromRandom()->toString()));
+                $item->setNamedTagEntry(new ListTag("Creator", [
+                    new StringTag("Name", $player->getName()),
+                    new StringTag("XUID", $player->getXuid())
+                ]));
+                $item->setNamedTagEntry(new IntTag("Timestamp", time()));
+            }
 
             $backpack = InvMenu::create($size->getValue() > 27 ? InvMenu::TYPE_DOUBLE_CHEST : InvMenu::TYPE_CHEST);
             $backpack->setName($item->getName());
