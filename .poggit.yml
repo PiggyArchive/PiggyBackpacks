@@ -4,4 +4,7 @@ branches:
 projects:
   PiggyBackpacks:
     path: ""
+    libs:
+      - src: muqsit/InvMenu/InvMenu
+        version: 2.1.0
 ...
