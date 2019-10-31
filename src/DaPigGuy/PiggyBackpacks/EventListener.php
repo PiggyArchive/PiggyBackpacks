@@ -44,6 +44,7 @@ class EventListener implements Listener
         $player = $event->getPlayer();
         $item = $player->getInventory()->getItemInHand();
         if ($item->getId() === Item::CHEST && ($size = $item->getNamedTagEntry("Size")) !== null) {
+            $event->setCancelled();
             if ($item->getCount() > 1) {
                 $player->sendTip(TextFormat::RED . "Backpacks can not be opened while stacked.");
                 return;
@@ -95,7 +96,6 @@ class EventListener implements Listener
             $player->getInventory()->setItemInHand($item);
 
             $backpack->send($player);
-            $event->setCancelled();
         }
     }
 
