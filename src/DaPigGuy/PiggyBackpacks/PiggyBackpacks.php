@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace DaPigGuy\PiggyBackpacks;
 
+use muqsit\invmenu\InvMenu;
 use muqsit\invmenu\InvMenuHandler;
 use pocketmine\inventory\ShapedRecipe;
 use pocketmine\item\Item;
@@ -22,6 +23,12 @@ class PiggyBackpacks extends PluginBase
 
     public function onEnable(): void
     {
+        if (!class_exists(InvMenu::class)) {
+            $this->getLogger()->error("InvMenu virion not found. Please download PiggyBackpacks from Poggit-CI or use DEVirion (not recommended).");
+            $this->getServer()->getPluginManager()->disablePlugin($this);
+            return;
+        }
+
         if (!InvMenuHandler::isRegistered()) InvMenuHandler::register($this);
 
         $this->saveDefaultConfig();
