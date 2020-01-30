@@ -63,7 +63,7 @@ class EventListener implements Listener
             $backpack->setName($item->getName());
             $backpack->getInventory()->setContents(array_map(function (CompoundTag $serializedItem): Item {
                 return Item::nbtDeserialize($serializedItem);
-            }, $item->getNamedTagEntry("Contents")->getValue()));
+            }, ($item->getNamedTagEntry("Contents") ?? new ListTag())->getValue()));
             for ($i = $backpack->getInventory()->getSize() - 1; $i >= $size->getValue(); $i--) {
                 $slot = Item::get(Item::INVISIBLE_BEDROCK)->setCustomName(" ");
                 $slot->setNamedTagEntry(new ByteTag("BackpackSlot", 1));
