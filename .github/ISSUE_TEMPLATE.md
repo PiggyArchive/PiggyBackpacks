@@ -24,4 +24,7 @@ Please make sure your issue complies with these guidelines:
 1.
 
 #### **Extra Information**
-<!-- Anything else we should know? -->
+<!--
+  Anything else we should know?
+  If possible, please include either crashdump data or a link to https://crash.pmmp.io.
+-->
