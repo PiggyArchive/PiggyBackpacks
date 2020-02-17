@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace DaPigGuy\PiggyBackpacks;
 
+use muqsit\invmenu\inventory\InvMenuInventory;
 use muqsit\invmenu\InvMenu;
 use pocketmine\event\inventory\InventoryTransactionEvent;
 use pocketmine\event\Listener;
@@ -70,8 +71,9 @@ class EventListener implements Listener
                 $backpack->getInventory()->setItem($i, $slot);
             }
 
-            $backpack->setListener(function (Player $player) use ($backpack): bool {
+            $updateClosure = (function (Player $player, $secondArgument) use ($backpack) {
                 $backpackItem = $player->getInventory()->getItemInHand();
+                if ($secondArgument instanceof InvMenuInventory) $backpackItem->removeNamedTagEntry("Opened");
                 $backpackItem->setNamedTagEntry(new ListTag("Contents", array_map(function (Item $item) {
                     return $item->nbtSerialize();
                 }, array_filter($backpack->getInventory()->getContents(true), function (Item $item) {
@@ -81,16 +83,8 @@ class EventListener implements Listener
                 return true;
             });
 
-            $backpack->setInventoryCloseListener(function (Player $player) use ($backpack): void {
-                $backpackItem = $player->getInventory()->getItemInHand();
-                $backpackItem->removeNamedTagEntry("Opened");
-                $backpackItem->setNamedTagEntry(new ListTag("Contents", array_map(function (Item $item) {
-                    return $item->nbtSerialize();
-                }, array_filter($backpack->getInventory()->getContents(true), function (Item $item) {
-                    return $item->getId() !== Item::INVISIBLE_BEDROCK || $item->getNamedTagEntry("BackpackSlot") === null;
-                }))));
-                $player->getInventory()->setItemInHand($backpackItem);
-            });
+            $backpack->setListener($updateClosure);
+            $backpack->setInventoryCloseListener($updateClosure);
 
             $item->setNamedTagEntry(new ByteTag("Opened", 1));
             $player->getInventory()->setItemInHand($item);
