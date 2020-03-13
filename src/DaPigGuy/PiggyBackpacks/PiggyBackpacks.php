@@ -12,10 +12,6 @@ use pocketmine\nbt\tag\IntTag;
 use pocketmine\plugin\PluginBase;
 use pocketmine\utils\TextFormat;
 
-/**
- * Class PiggyBackpacks
- * @package DaPigGuy\PiggyBackpacks
- */
 class PiggyBackpacks extends PluginBase
 {
     /** @var array */

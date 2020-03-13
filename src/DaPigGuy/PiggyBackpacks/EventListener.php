@@ -19,27 +19,16 @@ use pocketmine\Player;
 use pocketmine\utils\TextFormat;
 use pocketmine\utils\UUID;
 
-/**
- * Class EventListener
- * @package DaPigGuy\PiggyBackpacks
- */
 class EventListener implements Listener
 {
     /** @var PiggyBackpacks */
     public $plugin;
 
-    /**
-     * EventListener constructor.
-     * @param PiggyBackpacks $plugin
-     */
     public function __construct(PiggyBackpacks $plugin)
     {
         $this->plugin = $plugin;
     }
 
-    /**
-     * @param PlayerInteractEvent $event
-     */
     public function onInteract(PlayerInteractEvent $event): void
     {
         $player = $event->getPlayer();
@@ -93,9 +82,6 @@ class EventListener implements Listener
         }
     }
 
-    /**
-     * @param InventoryTransactionEvent $event
-     */
     public function onInventoryTransaction(InventoryTransactionEvent $event): void
     {
         $transaction = $event->getTransaction();
